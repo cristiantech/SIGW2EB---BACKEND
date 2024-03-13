@@ -5,10 +5,11 @@ import config from '../config';
 
 @Global()
 @Module({
-  imports:[
+  imports: [
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigType<typeof config>) => {
-        const {database,host,pass,port,user} = configService.database;
+        const { database, host, pass, port, user } = configService.database;
+        console.log(user);
         return {
           type: 'postgres',
           database,
@@ -16,12 +17,13 @@ import config from '../config';
           port,
           username: user,
           password: pass,
-        }
+          autoLoadEntities: true,
+          synchronize: false,
+        };
       },
-      inject: [config.KEY]
+      inject: [config.KEY],
     }),
   ],
-  exports: [TypeOrmModule]
+  exports: [TypeOrmModule],
 })
 export class DatabaseModule {}
-
