@@ -3,21 +3,21 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  readonly name: string;
 
   @IsString()
   @IsNotEmpty()
-  lastname: string;
+  readonly lastname: string;
 
   @IsString()
   @IsNotEmpty()
-  email: string;
+  readonly email: string;
 
   @IsString()
   @IsNotEmpty()
-  password: string;
+  readonly password: string;
 
   @IsString()
   @IsNotEmpty()
-  role: string;
+  readonly role: string;
 }

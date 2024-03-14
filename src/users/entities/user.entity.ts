@@ -1,15 +1,17 @@
+import { Book } from '../../books/entities/book.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class User {
-  @PrimaryGeneratedColumn({ name: 'id_cliente' })
-  idClient: number;
+  @PrimaryGeneratedColumn({ name: 'id_user' })
+  idUser: number;
 
   @Column({ length: 100, nullable: false })
   name: string;
@@ -31,4 +33,7 @@ export class User {
 
   @UpdateDateColumn({ type: 'timestamp', name: 'update_at' })
   updatedAt: Date;
+
+  @OneToMany(() => Book, book => book.users)
+  books: Book[];
 }

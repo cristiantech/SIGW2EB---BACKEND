@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,11 +9,30 @@ import { Repository } from 'typeorm';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly repoUser: Repository<User>,
-  ) {}
+  ) { }
 
-  create(payload: CreateUserDto) {
-    const newUser = this.repoUser.create(payload);
-    return this.repoUser.save(newUser);
+  async create(payload: CreateUserDto) {
+    const { name, email } = payload;
+    let existingUser: User;
+    try {
+      existingUser =
+        email && (existingUser = await this.repoUser.findOne({ where: { email}}))
+          ? existingUser
+          : null;
+    } catch (error) {
+      throw new NotFoundException(`Not found: ${error}`);
+    }
+    if (existingUser) {
+      if (email && existingUser.email === email) {
+        throw new ConflictException('Email is already in use');
+      }
+    }
+    try {
+      const newUser = this.repoUser.create(payload);
+      return this.repoUser.save(newUser);
+    } catch (error) {
+      throw new NotFoundException(`Not found: ${error}`);
+    }
   }
 
   async findAll() {
@@ -22,7 +41,7 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const usersOne = await this.repoUser.findOne({ where: { idClient: id } });
+    const usersOne = await this.repoUser.findOne({ where: { idUser: id } });
     if (!usersOne)
       throw new NotFoundException(`User with ID "${id}" not found`);
     return usersOne;

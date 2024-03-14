@@ -3,12 +3,13 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBookDto {
   @ApiProperty({ description: 'Titulo del libro' })
-  @IsString()
-  title: string;
 
   @IsString()
-  author: string;
+  readonly title: string;
+
+  @IsString()
+  readonly author: string;
 
   @IsNumber()
-  year: number;
+  readonly year: number;
 }
