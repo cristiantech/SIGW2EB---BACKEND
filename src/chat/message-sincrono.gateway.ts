@@ -1,12 +1,14 @@
 import { OnGatewayConnection, OnGatewayDisconnect, WebSocketGateway,  WebSocketServer } from '@nestjs/websockets';
-import { MessageSincronoService } from './message-sincrono.service';
 
-import {  Socket,Server } from 'socket.io';
+
+import {  Socket, Server } from 'socket.io';
 
 @WebSocketGateway()
 export class MessageSincronoGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  constructor(private readonly messageSincronoService: MessageSincronoService) {}
-  
+
+  @WebSocketServer() 
+  server: Server;
+
   handleConnection(client: Socket) {
     console.log("Conectado")
   }
@@ -15,10 +17,4 @@ export class MessageSincronoGateway implements OnGatewayConnection, OnGatewayDis
     console.log("Desconectado")
   }
 
-
-
-  @WebSocketServer() 
-  server: Server;
-
- 
 }

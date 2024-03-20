@@ -13,6 +13,7 @@ export class PackageService {
     @InjectRepository(Package) private readonly  packageRepo: Repository<Package>,
     @InjectRepository(User) private readonly  userRepo : Repository<User>
   ){}
+
   async create(createPackageDto: CreatePackageDto) {
     const newPackage = this.packageRepo.create(createPackageDto);
     if (createPackageDto.userId) {
@@ -56,6 +57,10 @@ export class PackageService {
   async updateLocation(id: number, updateLocationDto: UpdateLocationDto) {
     const pack = await this.packageRepo.findOne({where: {id: id}});
   
+    if (updateLocationDto.title) {
+      pack.title = updateLocationDto.title;
+    }
+    
     if (updateLocationDto.latitude) {
       pack.latitude = updateLocationDto.latitude;
     }

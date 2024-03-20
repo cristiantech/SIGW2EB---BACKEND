@@ -4,14 +4,12 @@ import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
 import { UpdateLocationDto } from './dto/update-location-package';
 
-@Controller('package')
+@Controller('packages')
 export class PackageController {
   constructor(private readonly packageService: PackageService) {}
 
   @Post()
   create(@Body() createPackageDto: CreatePackageDto) {
-    const 
-    console.log(createPackageDto)
     return this.packageService.create(createPackageDto);
   }
 

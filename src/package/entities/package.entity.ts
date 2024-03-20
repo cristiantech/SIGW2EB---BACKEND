@@ -22,11 +22,11 @@ export class Package {
   @Column()
   address: string;
 
-  @Column('float', { nullable: true })
-  latitude: number;
+  @Column('varchar', { nullable: true })
+  latitude: string;
 
-  @Column('float', { nullable: true })
-  longitude: number;
+  @Column('varchar', { nullable: true })
+  longitude: string;
 
   @ManyToOne(() => User, (user) => user.packages)
   user: User;

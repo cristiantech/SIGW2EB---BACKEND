@@ -21,13 +21,13 @@ export class CreatePackageDto {
     @IsString()
     state: string;
 
-    @IsNumber()
+    @IsString()
     @IsOptional()
-    latitude: number;
+    latitude: string;
 
-    @IsNumber()
+    @IsString()
     @IsOptional()
-    longitude: number;
+    longitude: string;
 
     @IsNumber()
     userId: number;
