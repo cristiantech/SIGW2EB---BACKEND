@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,53 +7,43 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectRepository(User) private readonly repoUser: Repository<User>,
-  ) { }
 
-  async create(payload: CreateUserDto) {
-    const { name, email } = payload;
-    let existingUser: User;
-    try {
-      existingUser =
-        email && (existingUser = await this.repoUser.findOne({ where: { email}}))
-          ? existingUser
-          : null;
-    } catch (error) {
-      throw new NotFoundException(`Not found: ${error}`);
-    }
-    if (existingUser) {
-      if (email && existingUser.email === email) {
-        throw new ConflictException('Email is already in use');
-      }
-    }
-    try {
-      const newUser = this.repoUser.create(payload);
-      return this.repoUser.save(newUser);
-    } catch (error) {
-      throw new NotFoundException(`Not found: ${error}`);
-    }
+  constructor(
+    @InjectRepository(User) private readonly  userRepo: Repository<User>,
+  ){}
+
+  create(createUserDto: CreateUserDto) {
+    const newUser = this.userRepo.create(createUserDto);
+    return this.userRepo.save(newUser);
   }
 
   async findAll() {
-    const users = await this.repoUser.find();
-    return users;
+    return this.userRepo.find();
+  }
+
+  async findPackagesByUser(userId: number) {
+    const user = await this.userRepo.find({
+      where: {id: userId},
+      relations: ['packages']
+    });
+    return user;
   }
 
   async findOne(id: number) {
-    const usersOne = await this.repoUser.findOne({ where: { idUser: id } });
-    if (!usersOne)
-      throw new NotFoundException(`User with ID "${id}" not found`);
-    return usersOne;
+    const userOne = this.userRepo.findOne({where:{id}});
+    if (!userOne) {
+      throw new NotFoundException(`this user not exist`);
+    }
+    return userOne; 
   }
 
-  async update(id: number, change: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.findOne(id);
-    this.repoUser.merge(user, change);
-    return this.repoUser.save(user);
+    const  updatedUser = this.userRepo.merge(user ,updateUserDto );
+    return this.userRepo.save(updatedUser); 
   }
 
-  remove(id: number) {
-    return this.repoUser.delete(id);
+  async remove(id: number) {
+    return await this.userRepo.delete(id);
   }
 }

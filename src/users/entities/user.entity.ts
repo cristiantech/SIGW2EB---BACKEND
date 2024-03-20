@@ -1,39 +1,26 @@
-import { Book } from '../../books/entities/book.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+// user.entity.ts
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Package } from '../../package/entities/package.entity';
+import { Notification } from '../../notification/entities/notification.entity';
+import { Message } from '../../message/entities/message.entity';
 
-@Entity({ name: 'users' })
+@Entity()
 export class User {
-  @PrimaryGeneratedColumn({ name: 'id_user' })
-  idUser: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @Column({ length: 100, nullable: false })
+  @Column()
   name: string;
 
-  @Column({ length: 100, nullable: false })
-  lastname: string;
+  @Column()
+  mail: string;
 
-  @Column({ length: 50, unique: true })
-  email: string;
+  @OneToMany(() => Package, (pack) => pack.user)
+  packages: Package[];
 
-  @Column({ length: 150, nullable: false })
-  password: string;
+  @OneToMany(() => Notification, (notification) => notification.user)
+  notifications: Notification[];
 
-  @Column({ length: 50, nullable: false })
-  role: string;
-
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ type: 'timestamp', name: 'update_at' })
-  updatedAt: Date;
-
-  @OneToMany(() => Book, book => book.users)
-  books: Book[];
+  @OneToMany(() => Message, (message) => message.user)
+  messages: Message[];
 }
